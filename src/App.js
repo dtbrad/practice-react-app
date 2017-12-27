@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { Alert, Button, Grid, Nav, Navbar, NavItem } from 'react-bootstrap';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { Alert, Button, Grid, Jumbotron, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import PropTypes from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -23,6 +23,12 @@ class App extends Component {
     return <ParentView {...this.state} transaction={this.transaction} />;
   }
 }
+
+const Welcome = () => (
+  <Jumbotron>
+    <h3 className="text-center">Welcome to Apples and Oranges</h3>
+  </Jumbotron>
+);
 
 const ParentView = ({ ...props }) => (
   <BrowserRouter>
@@ -50,6 +56,12 @@ const ParentView = ({ ...props }) => (
             />
           )}
         />
+        <Route path="/welcome" component={Welcome} />
+        <Route
+          exact
+          path="/"
+          render={() => <Redirect to="/welcome" />}
+        />
       </Switch>
     </Grid>
   </BrowserRouter>
@@ -70,11 +82,14 @@ ParentView.propTypes = {
 const Navigation = () => (
   <Navbar>
     <Nav>
+      <LinkContainer to="/welcome">
+        <NavItem eventKey={1}>Home</NavItem>
+      </LinkContainer>
       <LinkContainer to="/apples">
-        <NavItem eventKey={1}>Apples</NavItem>
+        <NavItem eventKey={2}>Apples</NavItem>
       </LinkContainer>
       <LinkContainer to="/oranges">
-        <NavItem eventKey={2}> Oranges</NavItem>
+        <NavItem eventKey={3}> Oranges</NavItem>
       </LinkContainer>
     </Nav>
   </Navbar>
