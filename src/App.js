@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Alert, Button, Grid, Nav, Navbar, NavItem } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import PropTypes from 'prop-types';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap-theme.css';
 
 class App extends Component {
   state = {
@@ -22,8 +26,8 @@ class App extends Component {
 
 const ParentView = ({ ...props }) => (
   <BrowserRouter>
-    <div style={{ padding: 50 }}>
-      <h3> Apples and Oranges </h3>
+    <Grid>
+      <h3 className="text-center"> Apples and Oranges </h3>
       <Navigation />
       <Switch>
         <Route
@@ -47,7 +51,7 @@ const ParentView = ({ ...props }) => (
           )}
         />
       </Switch>
-    </div>
+    </Grid>
   </BrowserRouter>
 );
 
@@ -64,27 +68,44 @@ ParentView.propTypes = {
 };
 
 const Navigation = () => (
-  <nav>
-    <Link to="/apples">Apples</Link>
-    <br />
-    <Link to="/oranges">Oranges</Link>
-    <hr />
-  </nav>
+  <Navbar>
+    <Nav>
+      <LinkContainer to="/apples">
+        <NavItem eventKey={1}>Apples</NavItem>
+      </LinkContainer>
+      <LinkContainer to="/oranges">
+        <NavItem eventKey={2}> Oranges</NavItem>
+      </LinkContainer>
+    </Nav>
+  </Navbar>
 );
 
 const Fruit = ({ fruitName, inventory, ordersPlaced, transaction }) => {
-  const inventoryStatus = inventory > 9 ? 'good' : inventory > 0 ? 'stock up soon!' : 'out of stock!';
-  const orderButton = inventory > 0 ? <button id={fruitName} onClick={transaction}>place order</button> : null;
+  let alertClass;
+  let alertMessage;
+  const orderButton = inventory > 0 ? <Button id={fruitName} onClick={transaction} bsStyle="warning" bsSize="large" block>place order</Button> : null;
+
+  const setStatus = () => {
+    if (inventory > 9) {
+      alertClass = 'success';
+      alertMessage = '';
+    } else if (inventory > 0) {
+      alertClass = 'warning';
+      alertMessage = 'stock up soon!';
+    } else {
+      alertClass = 'danger';
+      alertMessage = 'out of stock!';
+    }
+  };
+  setStatus();
 
   return (
     <div>
-      <h3>{fruitName} inventory status: {inventoryStatus}</h3>
-      <li>in stock: {inventory} </li>
-      <li>orders placed: {ordersPlaced} </li>
+      <Alert bsStyle={alertClass}>{fruitName} inventory: {inventory} {alertMessage}</Alert>
+      <Alert bsStyle="info">orders placed: {ordersPlaced} </Alert>
       <br />
+      <Button id={fruitName} onClick={transaction} bsStyle="primary" bsSize="large" block>restock</Button>
       {orderButton}
-      <br />
-      <button id={fruitName} onClick={transaction}>restock</button>
     </div>
   );
 };
